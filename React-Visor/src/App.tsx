@@ -6,6 +6,7 @@ import Home from '../src/pages/home.tsx';
 import './App.css';
 import About from './pages/About.tsx';
 import ExportExcel from './pages/ExportExcel.tsx';
+import CargodePeriodos from './pages/CargodePeriodos.tsx';
 
 interface PrivateRouteProps {
   component: ComponentType<any>;
@@ -51,6 +52,7 @@ function App() {
           <Route path="/Home" element={<PrivateRoute component={Home} />} />
           <Route path="/About" element={<About />} />
           <Route path="/Excel" element={<ExportExcel />} />
+          <Route path="/CargodePeriodos" element={<CargodePeriodos />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
