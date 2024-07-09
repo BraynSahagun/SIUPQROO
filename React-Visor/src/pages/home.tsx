@@ -58,6 +58,23 @@ const Home = () => {
               Excel
             </Button>
           </ListItem>
+          <ListItem>
+            <Button
+              component={Link}
+              to="/Superadministrador"
+              variant="contained"
+              sx={{
+                backgroundColor: 'green',
+                '&:hover': { backgroundColor: 'darkgreen' },
+                color: 'white',
+                fontWeight: 'bold',
+                py: 1,
+                px: 4,
+                borderRadius: 1
+              }}>
+              Superadministrador
+            </Button>
+          </ListItem>
         </Stack>
       </Container>
     </>
