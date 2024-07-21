@@ -5,17 +5,21 @@ import LogoUPQROO from '../../public/logoUPQROO.png';
 import fondoUPQROO from '../../public/LogoCafe.jpg';
 import instance from '../api/axios.js';
 import { AxiosResponse } from 'axios';
+import { useEffect } from 'react';
 
 interface User {
   pk: number;
   correo: string;
 }
 
-
 function Login() {
   const auth = useAuth();
   const navigate = useNavigate();
-
+  useEffect(() => {
+    if (auth?.user) {
+      navigate('/HomeAdmin');
+    }
+  }, [auth, navigate]);
   const handleGoogle = async (e: any) => {
     e.preventDefault();
 
@@ -26,15 +30,16 @@ function Login() {
 
     try {
       await auth.loginWithGoogle();
-
       const { email } = auth.user || {};
 
       if (!email) return;
 
       try {
-        const response: AxiosResponse<User> = await instance.get(`/user/read/email/${email}`);
+        const response: AxiosResponse<User> = await instance.get(
+          `/user/read/email/${email}`
+        );
 
-        console.log(response)
+        console.log(response);
 
         if (response.status === 200) {
           navigate('/Home');
@@ -46,12 +51,10 @@ function Login() {
           console.error('Error during login:', error);
         }
       }
-
     } catch (error) {
       console.error('Error during login:', error);
     }
   };
-
 
   return (
     <div className="relative flex items-center justify-center min-h-screen">
@@ -70,12 +73,13 @@ function Login() {
         />
         <div className="flex flex-col mb-4 w-full">
           <h2 className="text-2xl font-bold">Iniciar Sesión</h2>
-          <p className="text-gray-600 font-medium">Con una cuenta institucional (@upqroo.edu.mx)</p>
+          <p className="text-gray-600 font-medium">
+            Con una cuenta institucional (@upqroo.edu.mx)
+          </p>
         </div>
         <button
           className="flex items-center justify-center w-full py-2 mt-4 border rounded bg-white text-gray-700 hover:bg-gray-100"
-          onClick={(e) => handleGoogle(e)}
-        >
+          onClick={(e) => handleGoogle(e)}>
           <GoogleIcon className="mr-2" />
           Iniciar sesión con Google
         </button>
