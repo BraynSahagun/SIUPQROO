@@ -1,6 +1,21 @@
-import React, { useState, useEffect, ChangeEvent } from 'react';
+import { useState, ChangeEvent } from 'react';
 import InterfaceModel from './interfaceModel';
 import { useNavigate } from 'react-router-dom';
+import { AxiosResponse } from 'axios';
+import instance from '../api/axios';
+
+interface PeriodoEncontrado {
+  fecha: string;
+  codigoPeriodo: string;
+  fechaFinPeriodo: string;
+  periodo: string;
+}
+
+interface ResultadoProcesarPeriodos {
+  estado: boolean;
+  mensaje: string;
+  request: PeriodoEncontrado[] | null;
+}
 
 // Ejemplo de datos simulados (puedes obtener estos datos de tu API)
 const cuatrimestres = [
@@ -28,7 +43,7 @@ const CargaPeriodos = () => {
     { cuatri: "Cuatrimestre", mes: 0, anio: 0 },
   ]);
 
-  const validar = () =>{
+  const validar = () => {
     let newCuatrimestreSeleccionado = cuatrimestreSeleccionado.map(selection => {
       if (selection.cuatri === "Cuatrimestre" || selection.anio === 0) {
         return selection;
@@ -63,6 +78,31 @@ const CargaPeriodos = () => {
     setCuatrimestreSeleccionado(newSelections);
     validar();
   };
+
+  const enviarDatos = async () => {
+    const fechas = cuatrimestreSeleccionado.map(selection => {
+      if (selection.anio && selection.mes) {
+        const fecha = new Date(selection.anio, selection.mes - 1);
+        return fecha.toISOString().split('T')[0]; // Formatea la fecha como "YYYY-MM-DD"
+      }
+      return null;
+    });
+
+    const body = {
+      fecha1: fechas[0],
+      fecha2: fechas[1],
+      fecha3: fechas[2],
+      fecha4: fechas[3],
+    };
+
+    try {
+      const response: AxiosResponse<ResultadoProcesarPeriodos> = await instance.post('/df/extract', body);
+      console.log('Respuesta del servidor:', response.data);
+    } catch (error) {
+      console.error('Error al enviar datos:', error);
+      //Aquí iria el manejo de errores
+    }
+  }
 
   return (
     <InterfaceModel
@@ -106,7 +146,7 @@ const CargaPeriodos = () => {
             </tbody>
           </table>
           <div className="flex justify-center mt-6">
-            <button className="bg-orange-500 text-white font-bold px-8 py-2 rounded-xl">
+            <button className="bg-orange-500 text-white font-bold px-8 py-2 rounded-xl" onClick={enviarDatos}>
               Cargar Archivos
             </button>
           </div>
