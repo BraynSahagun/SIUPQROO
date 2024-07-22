@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import InterfaceModel from './interfaceModel';
 import { useNavigate } from 'react-router-dom';
+import instance from '../api/axios';
 
 const DeleteDataView = () => {
     const navigate = useNavigate();
@@ -19,8 +20,17 @@ const DeleteDataView = () => {
         setOpen(false);
     };
 
-    const handleDelete = () => {
-        // TODO
+    const handleDelete = async () => {
+        try {
+            const response = await instance.delete('/dbf/delete');
+            if (response.status === 200) {
+                alert('Eliminación exitosa');
+            } else {
+                alert('Hubo un problema al eliminar los datos');
+            }
+        } catch (error: any) {
+            alert(`Error al intentar eliminar los datos: ${error.message}`);
+        }
         handleClose();
     };
 
